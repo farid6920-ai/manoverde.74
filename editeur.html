@@ -159,10 +159,10 @@ var token = '';
 
 // ---------- balanced block parsing ----------
 function findBlock(text, varName){
-  var marker = 'var ' + varName + ' =';
-  var mIdx = text.indexOf(marker);
-  if (mIdx === -1) return null;
-  var i = mIdx + marker.length;
+  var re = new RegExp('var\\s+' + varName + '\\s*=');
+  var m = re.exec(text);
+  if (!m) return null;
+  var i = m.index + m[0].length;
   while (i<text.length && text[i] !== '{' && text[i] !== '[') i++;
   var open = text[i], close = open === '{' ? '}' : ']';
   var depth = 0, start = i, inStr = null;
