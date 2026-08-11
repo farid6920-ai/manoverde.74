@@ -295,19 +295,23 @@ function resizeImage(file){
     reader.onload = function(e){
       var img = new Image();
       img.onload = function(){
-        var maxW = 700;
-        var scale = Math.min(1, maxW/img.width);
-        var w = Math.round(img.width*scale), h = Math.round(img.height*scale);
-        var canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-        resolve(dataUrl);
+        try{
+          if (!img.width || !img.height) throw new Error('Dimensions illisibles');
+          var maxW = 700;
+          var scale = Math.min(1, maxW/img.width);
+          var w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          if (!dataUrl || dataUrl === 'data:,') throw new Error('Export JPEG vide');
+          resolve(dataUrl);
+        }catch(err){ reject(err); }
       };
-      img.onerror = reject;
+      img.onerror = function(){ reject(new Error('Format image non décodable')); };
       img.src = e.target.result;
     };
-    reader.onerror = reject;
+    reader.onerror = function(){ reject(new Error('Lecture du fichier impossible')); };
     reader.readAsDataURL(file);
   });
 }
@@ -482,11 +486,16 @@ function renderProducts(){
       fileInput.addEventListener('change', function(){
         var file = fileInput.files[0];
         if (!file) return;
+        setStatus('Traitement de la photo…');
         resizeImage(file).then(function(dataUrl){
           var filename = slug(p.name||p.id) + '-' + p.id + '.jpg';
           pendingImages[p.id] = { filename: filename, dataUrl: dataUrl };
           p.image = '/' + currentSite.imgFolder + '/' + filename;
+          setStatus('Photo prête, pense à publier.');
           draw();
+        }).catch(function(err){
+          setStatus('Photo illisible (format non supporté ou fichier corrompu) : essaie un JPG ou PNG.', true);
+          console.error('resize error', err);
         });
       });
 
