@@ -428,7 +428,7 @@
 #cartbar{display:none !important;}
 </style>
 </head>
-<body><div id="introSplash" style="position:fixed;inset:0;z-index:999;background:#0B0710;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease;overflow:hidden;"><img id="introSplashImg" alt="" style="width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.1s ease;"></div><script>window.__showIntroSplash = function(src){var el = document.getElementById("introSplash");if (!el) return;if (!src){ el.style.display = "none"; return; }var img = document.getElementById("introSplashImg");img.src = src;setTimeout(function(){ img.style.transform = "scale(1)"; }, 30);setTimeout(function(){ el.style.opacity = "0"; setTimeout(function(){ el.style.display = "none"; }, 650); }, 1400);};</script>
+<body><div id="introSplash" style="position:fixed;inset:0;z-index:999;background:#0B0710;overflow:hidden;"><img id="introSplashImg" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><div id="introCurtainL" style="display:none;position:absolute;top:0;left:0;width:50%;height:100%;overflow:hidden;"><img id="introCurtainImgL" alt="" style="position:absolute;top:0;left:0;width:200%;height:100%;object-fit:cover;"></div><div id="introCurtainR" style="display:none;position:absolute;top:0;right:0;width:50%;height:100%;overflow:hidden;"><img id="introCurtainImgR" alt="" style="position:absolute;top:0;right:0;width:200%;height:100%;object-fit:cover;"></div></div><script>/*__INTRO_V2__*/window.__showIntroSplash = function(src, type, duration){var el = document.getElementById("introSplash");if (!el) return;if (!src){ el.style.display = "none"; return; }type = type || "fondu";var holdMs = Math.max(0, (Number(duration) || 2.5) * 1000);var imgEl = document.getElementById("introSplashImg");var lWrap = document.getElementById("introCurtainL"), rWrap = document.getElementById("introCurtainR");var lImg = document.getElementById("introCurtainImgL"), rImg = document.getElementById("introCurtainImgR");function reveal(){if (type === "rideau"){lWrap.style.transition = "transform .7s cubic-bezier(.6,0,.4,1)";rWrap.style.transition = "transform .7s cubic-bezier(.6,0,.4,1)";lWrap.style.transform = "translateX(-100%)";rWrap.style.transform = "translateX(100%)";setTimeout(function(){ el.style.display = "none"; }, 720);} else if (type === "zoom"){imgEl.style.transition = "transform .9s ease, opacity .6s ease .1s";imgEl.style.transform = "scale(1.18)";el.style.transition = "opacity .6s ease";el.style.opacity = "0";setTimeout(function(){ el.style.display = "none"; }, 700);} else {el.style.transition = "opacity .7s ease";el.style.opacity = "0";setTimeout(function(){ el.style.display = "none"; }, 720);}}if (type === "rideau"){lImg.src = src; rImg.src = src;lWrap.style.display = "block"; rWrap.style.display = "block";lWrap.style.transform = "translateX(0)"; rWrap.style.transform = "translateX(0)";} else {imgEl.src = src;imgEl.style.display = "block";imgEl.style.transform = "scale(1)";el.style.opacity = "1";}setTimeout(reveal, holdMs);};</script>
 
 <div id="pmOverlay" class="pm-overlay"><button class="pm-close" id="pmClose">✕</button><div class="pm-box" id="pmContent"></div></div>
 
@@ -587,10 +587,11 @@
     "duration": 1600,
     "emoji": "✨"
   },
-  "introImage": "produits/intro-la-main-verte.jpg"
+  "introImage": "produits/intro-la-main-verte.jpg",
+  "introDuration": 3
 };
   WHATSAPP_NUMBER = CONFIG.whatsappNumber;
-  if (window.__showIntroSplash) window.__showIntroSplash(CONFIG.introImage);
+  if (window.__showIntroSplash) window.__showIntroSplash(CONFIG.introImage, CONFIG.introAnimType, CONFIG.introDuration);
 
   // ---- Categories affichees sur la page d'accueil ----
   // id    : identifiant technique, en minuscules et sans espace/accent
